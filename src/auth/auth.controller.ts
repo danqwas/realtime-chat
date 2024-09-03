@@ -28,6 +28,12 @@ export class AuthController {
     description: 'Internal server error',
   })
   @Post('register')
+  /**
+   * Creates a new user and returns a login response.
+   *
+   * @param {CreateUserDto} createUserDto - The data transfer object containing user information.
+   * @return {Promise<LoginResponseDto>} A promise that resolves to a login response object.
+   */
   createUser(@Body() createUserDto: CreateUserDto): Promise<LoginResponseDto> {
     return this.authService.create(createUserDto);
   }
@@ -44,6 +50,12 @@ export class AuthController {
   @Get('check-auth-status')
   @Auth()
   @ApiBearerAuth()
+  /**
+   * Checks the authentication status of a user.
+   *
+   * @param {User} user - The user to check the authentication status for.
+   * @return {Promise<LoginResponseDto>} A promise that resolves to a login response object.
+   */
   checkAuthStatus(@GetUser() user: User): Promise<LoginResponseDto> {
     return this.authService.checkAuthStatus(user);
   }
@@ -62,6 +74,12 @@ export class AuthController {
     description: 'Internal server error',
   })
   @Post('login')
+  /**
+   * Authenticates a user and returns a login response.
+   *
+   * @param {LoginUserDto} loginUserDto - The data transfer object containing user login information.
+   * @return {Promise<LoginResponseDto>} A promise that resolves to a login response object.
+   */
   login(@Body() loginUserDto: LoginUserDto): Promise<LoginResponseDto> {
     return this.authService.login(loginUserDto);
   }

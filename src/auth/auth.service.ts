@@ -5,6 +5,7 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -16,12 +17,28 @@ import { JwtPayload } from './interfaces/jwt-payload.interface';
 
 @Injectable()
 export class AuthService {
+  logger: Logger = new Logger('AuthService');
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
   ) {}
-  async create(createUserDto: CreateUserDto) {
+  /**
+   * Logs in a user with the provided email and password.
+   *
+   * @param {LoginUserDto} loginUserDto - The DTO containing the email and password.
+   * @return {Promise<{...User, token: string}>} A promise that resolves to an object containing the user data and a JSON Web Token.
+   * @throws {UnauthorizedException} If the email or password is invalid.
+   */
+  async create(createUserDto: CreateUserDto): Promise<{
+    token: string;
+    id: string;
+    email: string;
+    password: string;
+    fullName: string;
+    isActive: boolean;
+    roles: string[];
+  }> {
     try {
       const { password, ...userData } = createUserDto;
       const user = this.userRepository.create({
@@ -36,8 +53,22 @@ export class AuthService {
       this.handleDBErrors(error);
     }
   }
-
-  async login(loginUserDto: LoginUserDto) {
+  /**
+   * Logs in a user with the provided email and password.
+   *
+   * @param {LoginUserDto} loginUserDto - The DTO containing the email and password.
+   * @return {Promise<{...User, token: string}>} A promise that resolves to an object containing the user data and a JSON Web Token.
+   * @throws {UnauthorizedException} If the email or password is invalid.
+   */
+  async login(loginUserDto: LoginUserDto): Promise<{
+    token: string;
+    id: string;
+    email: string;
+    password: string;
+    fullName: string;
+    isActive: boolean;
+    roles: string[];
+  }> {
     const { email, password } = loginUserDto;
     const user = await this.userRepository.findOne({
       where: { email },
@@ -51,21 +82,44 @@ export class AuthService {
 
     return { ...user, token: this.getJsonWebToken({ id: user.id }) };
   }
-
-  async checkAuthStatus(user: User) {
+  /**
+   * Checks the authentication status of a given user and returns the user data with a JSON Web Token (JWT).
+   *
+   * @param {User} user - The user object to check the authentication status for.
+   * @return {object} The user data with a JWT token.
+   */
+  async checkAuthStatus(user: User): Promise<{
+    token: string;
+    id: string;
+    email: string;
+    password: string;
+    fullName: string;
+    isActive: boolean;
+    roles: string[];
+  }> {
     return { ...user, token: this.getJsonWebToken({ id: user.id }) };
   }
-
-  private getJsonWebToken(payload: JwtPayload) {
+  /**
+   * Generates a JSON Web Token (JWT) based on the provided payload.
+   *
+   * @param {JwtPayload} payload - The payload to be signed and encoded in the JWT.
+   * @return {string} The generated JWT.
+   */
+  private getJsonWebToken(payload: JwtPayload): string {
     const token = this.jwtService.sign(payload);
     return token;
   }
-
+  /**
+   * Handles database errors by checking the error code and throwing an exception accordingly.
+   *
+   * @param {any} error - The error object thrown by the database operation.
+   * @return {never} This function never returns, it always throws an exception.
+   */
   private handleDBErrors(error: any): never {
     if (error.code === '23505') {
       throw new BadRequestException(error.detail);
     }
-    console.log(error);
+    this.logger.error(error);
     throw new InternalServerErrorException(
       'Unexpected error check server logs',
     );

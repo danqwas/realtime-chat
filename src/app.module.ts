@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AuthModule } from './auth/auth.module';
 import { envs } from './config';
+import { MessageWsModule } from './message-ws/message-ws.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { envs } from './config';
       synchronize: true,
     }),
     AuthModule,
+    MessageWsModule,
   ],
   controllers: [],
   providers: [],
