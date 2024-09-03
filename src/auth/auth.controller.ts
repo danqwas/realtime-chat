@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 

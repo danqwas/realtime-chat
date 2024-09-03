@@ -1,8 +1,4 @@
-/* eslint-disable prettier/prettier */
-import {
-  IsString,
-  MinLength,
-} from 'class-validator';
+import { IsString, MinLength } from 'class-validator';
 
 export class NewMessageDto {
   @IsString()

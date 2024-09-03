@@ -3,7 +3,6 @@ import { Repository } from 'typeorm';
 
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-/* eslint-disable prettier/prettier */
 import { PassportStrategy } from '@nestjs/passport';
 import { InjectRepository } from '@nestjs/typeorm';
 
