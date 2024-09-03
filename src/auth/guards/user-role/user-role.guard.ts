@@ -8,16 +8,18 @@ import {
   ExecutionContext,
   ForbiddenException,
   Injectable,
+  Logger,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
 @Injectable()
 export class UserRoleGuard implements CanActivate {
+  logger: Logger = new Logger('UseRoleGuard');
   constructor(private readonly reflector: Reflector) {}
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    console.log('CanActivate');
+    this.logger.log('Activate');
     const validRoles: string[] = this.reflector.get(
       META_ROLES,
       context.getHandler(),

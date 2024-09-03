@@ -10,6 +10,7 @@ interface EnvVars {
   POSTGRES_DB: string;
   POSTGRES_USER: string;
   JWT_SECRET: string;
+  FRONTEND_URL: string;
 }
 
 const envSchema = joi
@@ -21,6 +22,7 @@ const envSchema = joi
     POSTGRES_DB: joi.string().required(),
     POSTGRES_USER: joi.string().required(),
     JWT_SECRET: joi.string().required(),
+    FRONTEND_URL: joi.string().required(),
   })
   .unknown(true);
 
@@ -38,4 +40,5 @@ export const envs = {
   postgresDb: envVars.POSTGRES_DB,
   postgresUser: envVars.POSTGRES_USER,
   jwtSecret: envVars.JWT_SECRET,
+  frontendUrl: envVars.FRONTEND_URL,
 };
